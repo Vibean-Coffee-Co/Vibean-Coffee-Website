@@ -54,6 +54,7 @@ function CartScreen() {
         <div>
           <div>
               <table>
+                  <tbody>
                 <th>
                   <tr>
                     <td>Image</td>
@@ -114,6 +115,7 @@ function CartScreen() {
                     </tr>
                   ))}
                 </tr>
+                </tbody>
             </table>
           </div>
           <div>

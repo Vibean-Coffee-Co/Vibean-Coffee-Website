@@ -2,8 +2,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image'
 import Logo from '../public/logo.png';
+import { useContext } from 'react';
+import { Store } from '../utils/Store';
 
 export default function Layout({ title, description, children }) {
+    const { state, dispatch } = useContext(Store);
+    const { darkMode, cart } = state;
   return (
     <>
         <Head>
@@ -29,6 +33,15 @@ export default function Layout({ title, description, children }) {
             </Link>
             </nav>
             <button className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Login</button>
+            <Link href="/cart" passHref>
+                <div>
+                    {cart.cartItems.length > 0 ? (
+                        <div>{cart.cartItems.length}</div>
+                    ) : (
+                      'Cart'
+                    )}
+                </div>
+              </Link>
         </div>
         <hr />
         </header>

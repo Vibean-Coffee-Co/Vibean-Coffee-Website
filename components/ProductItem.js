@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { urlForThumbnail } from '../utils/image';
 import Image from 'next/image'
   
-export default function ProductItem({ product }) {
+export default function ProductItem({ product, addToCartHandler }) {
     return (
       <div>
         <Link href={`/product/${product.slug.current}`} passHref>
@@ -25,7 +25,10 @@ export default function ProductItem({ product }) {
         </Link>
         <a>₹{product.price}</a>
         <div>
-          <button className='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'>
+          <button 
+          onClick={() => addToCartHandler(product)} 
+          className='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
+          >
             Add to cart
           </button>
         </div>
