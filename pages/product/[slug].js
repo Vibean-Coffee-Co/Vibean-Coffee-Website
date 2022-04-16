@@ -1,12 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import client from '../../utils/client';
-import { urlFor } from '../../utils/image';
+import { urlFor, urlForThumbnail } from '../../utils/image';
+import { Store } from '../../utils/Store';
+import axios from 'axios';
 
 export default function ProductScreen(props) {
     const { slug } = props;
+    const {
+        state: { cart },
+        dispatch,
+      } = useContext(Store);
     const [state, setState] = useState({
       product: null,
       loading: true,
@@ -29,6 +35,29 @@ export default function ProductScreen(props) {
       fetchData();
     }, []);
   
+    const addToCartHandler = async () => {
+        const existItem = cart.cartItems.find((x) => x._id === product._id);
+        const quantity = existItem ? existItem.quantity + 1 : 1;
+        const { data } = await axios.get(`/api/products/${product._id}`);
+        if (data.countInStock < quantity) {
+          alert('Sorry. Product is out of stock');
+          return;
+        }
+        dispatch({
+          type: 'CART_ADD_ITEM',
+          payload: {
+            _key: product._id,
+            name: product.name,
+            countInStock: product.countInStock,
+            slug: product.slug.current,
+            price: product.price,
+            image: urlForThumbnail(product.image),
+            quantity,
+          },
+        });
+        alert(`${product.name} added to the cart`);
+    };
+
     return (
       <Layout title={product?.title}>
         {loading ? (
@@ -85,7 +114,7 @@ export default function ProductScreen(props) {
                     </a>
                     </div>
 
-                <button>Add to cart</button>
+                <button onClick={addToCartHandler}>Add to cart</button>
             </div>
 
         )}
