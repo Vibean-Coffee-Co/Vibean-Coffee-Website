@@ -1,29 +1,55 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useForm, Controller } from 'react-hook-form';
-import NextLink from 'next/link';
+import Link from 'next/link';
+import { getError } from '../utils/error';
 import {
-  Button,
-  Link,
   List,
   ListItem,
   TextField,
   Typography,
+  Button
 } from '@mui/material';
+import axios from 'axios';
+import jsCookie from 'js-cookie';
+import { useRouter } from 'next/router';
+import { Store } from '../utils/Store';
 
 export default function RegisterScreen() {
+  const { state, dispatch } = useContext(Store);
+  const { userInfo } = state;
+  const router = useRouter();
+  useEffect(() => {
+    if (userInfo) {
+      router.push('/');
+    }
+  }, [router, userInfo]);
+
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm();
 
-  const submitHandler = async ({
-    name,
-    email,
-    password,
-    confirmPassword,
-  }) => {};
+  const submitHandler = async ({ name, email, password, confirmPassword }) => {
+    if (password !== confirmPassword) {
+      alert("Passwords don't match");
+      return;
+    }
+    try {
+      const { data } = await axios.post('/api/users/register', {
+        name,
+        email,
+        password,
+      });
+      dispatch({ type: 'USER_LOGIN', payload: data });
+      jsCookie.set('userInfo', JSON.stringify(data));
+      router.push('/');
+    } catch (err) {
+      alert(getError(err));
+      
+    }
+  };
   return (
     <Layout title="Register">
       <form onSubmit={handleSubmit(submitHandler)}>
@@ -155,9 +181,9 @@ export default function RegisterScreen() {
           </ListItem>
           <ListItem>
             Already have an account?{' '}
-            <NextLink href={'/login'} passHref>
-              <Link>Login</Link>
-            </NextLink>
+            <Link href={'/login'} passHref>
+              <a>Login</a>
+            </Link>
           </ListItem>
         </List>
       </form>

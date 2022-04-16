@@ -2,12 +2,32 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image'
 import Logo from '../public/logo.png';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Store } from '../utils/Store';
+import { useRouter } from 'next/router';
+import jsCookie from 'js-cookie';
 
 export default function Layout({ title, description, children }) {
+    const router = useRouter();
     const { state, dispatch } = useContext(Store);
-    const { darkMode, cart } = state;
+    const { cart, userInfo } = state;
+    const [anchorEl, setAnchorEl] = useState(null);
+    const loginMenuCloseHandler = (e, redirect) => {
+      setAnchorEl(null);
+      if (redirect) {
+        router.push(redirect);
+      }
+    };
+    const loginClickHandler = (e) => {
+      setAnchorEl(e.currentTarget);
+    };
+    const logoutClickHandler = () => {
+      setAnchorEl(null);
+      dispatch({ type: 'USER_LOGOUT' });
+      jsCookie.remove('userInfo');
+      jsCookie.remove('cartItems');
+      router.push('/');
+    };
   return (
     <>
         <Head>
@@ -41,9 +61,33 @@ export default function Layout({ title, description, children }) {
                     )}
                 </div>
             </Link>
-            <Link href="/login" passHref>
-            <button className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Login</button>
+            {userInfo ? (
+                <>
+                  <button
+                    onClick={loginClickHandler}
+                  >
+                    {userInfo.name}
+                  </button>
+                  <div
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={loginMenuCloseHandler}
+                  >
+                    <button
+                      onClick={(e) => loginMenuCloseHandler(e, '/profile')}
+                    >
+                      Profile
+                    </button>
+                    <button onClick={logoutClickHandler}>Logout</button>
+                  </div>
+                </>
+              ) : (
+                <Link href="/login" passHref>
+                  <a>Login</a>
             </Link>
+              )}
         </div>
         <hr />
         </header>
