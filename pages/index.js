@@ -1,7 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import Layout from '../components/Layout';
+import { Alert, CircularProgress, Grid } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import { useContext, useEffect, useState } from 'react';
+import Layout from '../components/Layout';
 import ProductItem from '../components/ProductItem';
 import client from '../utils/client';
 import { urlForThumbnail } from '../utils/image';
@@ -13,6 +15,7 @@ export default function Home() {
     dispatch,
   } = useContext(Store);
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [state, setState] = useState({
     products: [],
     error: '',
@@ -37,7 +40,7 @@ export default function Home() {
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
-      alert('Sorry. Product is out of stock');
+      enqueueSnackbar('Sorry. Product is out of stock', { variant: 'error' });
       return;
     }
     dispatch({
@@ -52,27 +55,30 @@ export default function Home() {
         quantity,
       },
     });
-    alert(`${product.name} added to the cart`);
+    enqueueSnackbar(`${product.name} added to the cart`, {
+      variant: 'success',
+    });
     router.push('/cart');
   };
 
   return (
     <Layout>
       {loading ? (
-        <a>loading...</a>
+        <CircularProgress />
       ) : error ? (
-        <a>{error}</a>
-        ) : (
-          <div className='mx-36 grid grid-cols-4 gap-4 h-screen'>
-            {products.map((product) => (
-                <ProductItem 
-                key={product.slug} 
+        <Alert variant="danger">{error}</Alert>
+      ) : (
+        <Grid container spacing={3}>
+          {products.map((product) => (
+            <Grid item md={4} key={product.slug}>
+              <ProductItem
                 product={product}
                 addToCartHandler={addToCartHandler}
-                ></ProductItem>
-            ))}
-          </div>
-        )}
+              ></ProductItem>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Layout>
   );
 }

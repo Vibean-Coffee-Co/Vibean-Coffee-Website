@@ -1,10 +1,14 @@
 // First, we must import the schema creator
-import createSchema from 'part:@sanity/base/schema-creator'
+import createSchema from 'part:@sanity/base/schema-creator';
 
 // Then import schema types from any plugins that might expose them
-import schemaTypes from 'all:part:@sanity/base/schema-type'
-import product from './product'
-import user from './user'
+import schemaTypes from 'all:part:@sanity/base/schema-type';
+import product from './product';
+import user from './user';
+import order from './order';
+import orderItem from './orderItem';
+import paymentResult from './paymentResult';
+import shippingAddress from './shippingAddress';
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -15,6 +19,10 @@ export default createSchema({
   types: schemaTypes.concat([
     /* Your types here! */
     product,
-    user
+    user,
+    order,
+    orderItem,
+    paymentResult,
+    shippingAddress,
   ]),
-})
+});

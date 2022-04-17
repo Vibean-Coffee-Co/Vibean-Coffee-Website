@@ -1,7 +1,8 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useForm, Controller } from 'react-hook-form';
 import NextLink from 'next/link';
+import Form from '../components/Form';
 import {
   Button,
   Link,
@@ -10,28 +11,30 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
 import jsCookie from 'js-cookie';
+import { getError } from '../utils/error';
 
 export default function LoginScreen() {
-
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
   const router = useRouter();
+  const { redirect } = router.query;
   useEffect(() => {
     if (userInfo) {
-      router.push('/');
+      router.push(redirect || '/');
     }
-  }, [router, userInfo]);
-
+  }, [router, userInfo, redirect]);
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm();
 
+  const { enqueueSnackbar } = useSnackbar();
   const submitHandler = async ({ email, password }) => {
     try {
       const { data } = await axios.post('/api/users/login', {
@@ -40,15 +43,14 @@ export default function LoginScreen() {
       });
       dispatch({ type: 'USER_LOGIN', payload: data });
       jsCookie.set('userInfo', JSON.stringify(data));
-      router.push('/');
+      router.push(redirect || '/');
     } catch (err) {
-      alert(err.message);
+      enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
-
   return (
     <Layout title="Login">
-      <form onSubmit={handleSubmit(submitHandler)}>
+      <Form onSubmit={handleSubmit(submitHandler)}>
         <Typography component="h1" variant="h1">
           Login
         </Typography>
@@ -118,12 +120,12 @@ export default function LoginScreen() {
           </ListItem>
           <ListItem>
             Do not have an account?{' '}
-            <NextLink href={'/register'} passHref>
+            <NextLink href={`/register?redirect=${redirect || '/'}`} passHref>
               <Link>Register</Link>
             </NextLink>
           </ListItem>
         </List>
-      </form>
+      </Form>
     </Layout>
   );
 }

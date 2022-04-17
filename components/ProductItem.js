@@ -1,37 +1,43 @@
-import Link from 'next/link';
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Rating,
+  Typography,
+} from '@mui/material';
+import NextLink from 'next/link';
+import React from 'react';
 import { urlForThumbnail } from '../utils/image';
-import Image from 'next/image'
-  
+
 export default function ProductItem({ product, addToCartHandler }) {
-    return (
-      <div>
-        <Link href={`/product/${product.slug.current}`} passHref>
-          <div>
-            <Image
-              alt={product.name}
-              src={urlForThumbnail(product.image)}
-              width="300"
-              height="300"
-            ></Image>
-            <div>
-              <a>{product.name}</a>
-              <div>
-              <a>
-                ⭐️{product.rating} ({product.numReviews} reviews)
-              </a>
-              </div>
-            </div>
-          </div>
-        </Link>
-        <a>₹{product.price}</a>
-        <div>
-          <button 
-          onClick={() => addToCartHandler(product)} 
-          className='bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow'
-          >
-            Add to cart
-          </button>
-        </div>
-      </div>
-    );
+  return (
+    <Card>
+      <NextLink href={`/product/${product.slug.current}`} passHref>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            image={urlForThumbnail(product.image)}
+            title={product.name}
+          ></CardMedia>
+          <CardContent>
+            <Typography>{product.name}</Typography>
+            <Rating value={product.rating} readOnly></Rating>
+          </CardContent>
+        </CardActionArea>
+      </NextLink>
+      <CardActions>
+        <Typography>${product.price}</Typography>
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => addToCartHandler(product)}
+        >
+          Add to cart
+        </Button>
+      </CardActions>
+    </Card>
+  );
 }
