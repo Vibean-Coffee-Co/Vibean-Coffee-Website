@@ -87,6 +87,7 @@ function PlaceOrderScreen() {
       enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
+
   return (
     <Layout title="Place Order">
       <CheckoutWizard activeStep={3}></CheckoutWizard>
@@ -104,7 +105,7 @@ function PlaceOrderScreen() {
                 </Typography>
               </ListItem>
               <ListItem>
-                {shippingAddress.fullName}, {shippingAddress.address},{' '}
+                {shippingAddress.fullName}, {shippingAddress.phoneNumber}, {shippingAddress.address},{' '}
                 {shippingAddress.city}, {shippingAddress.postalCode},{' '}
                 {shippingAddress.country}
               </ListItem>

@@ -2,7 +2,6 @@ import { Button, List, ListItem, TextField, Typography } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/Layout';
-import Form from '../components/Form';
 import { Controller, useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { Store } from '../utils/Store';
@@ -26,23 +25,26 @@ export default function ShippingScreen() {
     if (!userInfo) {
       return router.push('/login?redirect=/shipping');
     }
-
+    if (shippingAddress!=null){
     setValue('fullName', shippingAddress.fullName);
+    setValue('phoneNumber', shippingAddress.phoneNumber);
     setValue('address', shippingAddress.address);
     setValue('city', shippingAddress.city);
     setValue('postalCode', shippingAddress.postalCode);
     setValue('country', shippingAddress.country);
+    }
   }, [router, setValue, shippingAddress, userInfo]);
 
-  const submitHandler = ({ fullName, address, city, postalCode, country }) => {
+  const submitHandler = ({ fullName, phoneNumber, address, city, postalCode, country }) => {
     dispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
-      payload: { fullName, address, city, postalCode, country },
+      payload: { fullName, phoneNumber, address, city, postalCode, country },
     });
     jsCookie.set(
       'shippingAddress',
       JSON.stringify({
         fullName,
+        phoneNumber,
         address,
         city,
         postalCode,
@@ -54,7 +56,7 @@ export default function ShippingScreen() {
   return (
     <Layout title="Shipping Address">
       <CheckoutWizard activeStep={1}></CheckoutWizard>
-      <Form onSubmit={handleSubmit(submitHandler)}>
+      <form onSubmit={handleSubmit(submitHandler)}>
         <Typography component="h1" variant="h1">
           Shipping Address
         </Typography>
@@ -81,6 +83,35 @@ export default function ShippingScreen() {
                       ? errors.fullName.type === 'minLength'
                         ? 'Full Name length is more than 1'
                         : 'Full Name is required'
+                      : ''
+                  }
+                  {...field}
+                ></TextField>
+              )}
+            ></Controller>
+          </ListItem>
+          <ListItem>
+            <Controller
+              name="phoneNumber"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 1,
+              }}
+              render={({ field }) => (
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  id="phoneNumber"
+                  label="Phone Number"
+                  inputProps={{ type: 'phoneNumber' }}
+                  error={Boolean(errors.phoneNumber)}
+                  helperText={
+                    errors.phoneNumber
+                      ? errors.phoneNumber.type === 'minLength'
+                        ? 'Phone Number length exceeded'
+                        : 'Phone Number is required'
                       : ''
                   }
                   {...field}
@@ -210,7 +241,7 @@ export default function ShippingScreen() {
             </Button>
           </ListItem>
         </List>
-      </Form>
+      </form>
     </Layout>
   );
 }

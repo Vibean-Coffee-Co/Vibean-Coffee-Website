@@ -1,6 +1,7 @@
 import {
   Alert,
   Box,
+  Button,
   Card,
   CircularProgress,
   Grid,
@@ -130,6 +131,7 @@ function OrderScreen({ params }) {
         return orderID;
       });
   }
+  
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
       try {
@@ -153,6 +155,59 @@ function OrderScreen({ params }) {
     enqueueSnackbar(getError(err), { variant: 'error' });
   }
 
+
+  const makePayment = async () => {
+    const res = await initializeRazorpay();
+
+    if (!res) {
+      alert("Razorpay SDK Failed to load");
+      return;
+    }
+    
+   const data = await fetch("/api/razorpay", { method: "POST" }).then((t) =>
+      t.json()
+    );
+    
+    var options = {
+      key: process.env.RAZORPAY_KEY, 
+      name: "Vibean Foods & Beverages Pvt. Ltd.",
+      currency: data.currency,
+      amount: data.amount,
+      order_id: data.id,
+      description: "Thank you for ordering from us!",
+      image: "https://res.cloudinary.com/dpfpk49oa/image/upload/v1649648835/logo-for-website_ixyaju.png",
+      handler: function (response) {
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature);
+      },
+      prefill: {
+        name: `${shippingAddress.fullName}`,
+        email: userInfo.email,
+        contact: `${shippingAddress.phoneNumber}`,
+      },
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  };
+
+  const initializeRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+
+      document.body.appendChild(script);
+    });
+  };
+
   return (
     <Layout title={`Order ${orderId}`}>
       <Typography component="h1" variant="h1">
@@ -174,7 +229,7 @@ function OrderScreen({ params }) {
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  {shippingAddress.fullName}, {shippingAddress.address},{' '}
+                  {shippingAddress.fullName}, {shippingAddress.phoneNumber}, {shippingAddress.address},{' '}
                   {shippingAddress.city}, {shippingAddress.postalCode},{' '}
                   {shippingAddress.country}
                 </ListItem>
@@ -245,7 +300,7 @@ function OrderScreen({ params }) {
                               <Typography>{item.quantity}</Typography>
                             </TableCell>
                             <TableCell align="right">
-                              <Typography>${item.price}</Typography>
+                              <Typography>₹{item.price}</Typography>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -268,7 +323,7 @@ function OrderScreen({ params }) {
                       <Typography>Items:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">${itemsPrice}</Typography>
+                      <Typography align="right">₹{itemsPrice}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -278,7 +333,7 @@ function OrderScreen({ params }) {
                       <Typography>Tax:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">${taxPrice}</Typography>
+                      <Typography align="right">₹{taxPrice}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -288,7 +343,7 @@ function OrderScreen({ params }) {
                       <Typography>Shipping:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">${shippingPrice}</Typography>
+                      <Typography align="right">₹{shippingPrice}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -301,11 +356,12 @@ function OrderScreen({ params }) {
                     </Grid>
                     <Grid item xs={6}>
                       <Typography align="right">
-                        <strong>${totalPrice}</strong>
+                        <strong>₹{totalPrice}</strong>
                       </Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
+                <Button variant="contained" onClick={makePayment}>Pay using Razorpay</Button>
                 {!isPaid && (
                   <ListItem>
                     {isPending ? (
