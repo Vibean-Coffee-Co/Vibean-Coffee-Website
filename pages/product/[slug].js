@@ -111,7 +111,6 @@ export default function ProductScreen(props) {
                   </Typography>
                 </ListItem>
                 <ListItem>Category: {product.category}</ListItem>
-                <ListItem>Brand: {product.brand}</ListItem>
                 <ListItem>
                   <Rating value={product.rating} readOnly></Rating>
                   <Typography sx={classes.smallText}>
@@ -132,7 +131,7 @@ export default function ProductScreen(props) {
                         <Typography>Price</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography>${product.price}</Typography>
+                        <Typography>₹{product.price}</Typography>
                       </Grid>
                     </Grid>
                   </ListItem>

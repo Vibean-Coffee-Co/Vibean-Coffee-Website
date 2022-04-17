@@ -1,3 +1,6 @@
+Nextjs Frontend: [Vibean Coffee](https://vibean-coffee-website.vercel.app/payment)
+Sanity Studio: [Studio](https://vibeancoffee.sanity.studio/desk)
+
 ```bash
 git clone https://github.com/Vibean-Coffee-Co/Vibean-Coffee-Website.git
 cd Vibean-Coffee-Website
@@ -15,9 +18,16 @@ npx sanity start
 
 Open [http://localhost:3333](http://localhost:3333) with your browser to see the Sanity Dashboard
 
-Create .env file in root folder 
+Create .env file in root folder
+
 ```
 SANITY_AUTH_TOKEN=generate API token with EDITOR permissions from sanity.io dashboard
 JWT_SECRET=somethingsecret
 PAYPAL_CLIENT_ID=create app sandbox from https://developer.paypal.com/developer/applications
+```
+
+Deploying sanity studio
+
+```
+npx sanity deploy
 ```

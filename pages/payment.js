@@ -66,8 +66,8 @@ export default function PaymentScreen() {
                   control={<Radio />}
                 ></FormControlLabel>
                 <FormControlLabel
-                  label="Stripe"
-                  value="Stripe"
+                  label="RazorPay"
+                  value="RazorPay"
                   control={<Radio />}
                 ></FormControlLabel>
                 <FormControlLabel
