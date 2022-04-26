@@ -4,12 +4,38 @@ export default {
   type: 'document',
   fields: [
     {
+      name: 'Type',
+      title: 'Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Subscription', value: 'sub' },
+          { title: 'Single Order', value: 'single' },
+        ]
+      }
+    },
+    {
       name: 'name',
       title: 'Name',
       type: 'string',
     },
     {
+      name: 'size',
+      title: 'Size',
+      type: 'string',
+    },
+    {
       name: 'price',
+      title: 'Price',
+      type: 'number',
+    },
+    {
+      name: 'price2',
+      title: 'Price',
+      type: 'number',
+    },
+    {
+      name: 'price3',
       title: 'Price',
       type: 'number',
     },

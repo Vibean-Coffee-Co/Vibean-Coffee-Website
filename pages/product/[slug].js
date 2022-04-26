@@ -22,6 +22,7 @@ import { urlFor, urlForThumbnail } from '../../utils/image';
 import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import product from '../../sanity/schemas/product';
 
 export default function ProductScreen(props) {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function ProductScreen(props) {
     error: '',
   });
   const { product, loading, error } = state;
+  const [value, setValue] = useState('250g');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,7 +70,8 @@ export default function ProductScreen(props) {
         name: product.name,
         countInStock: product.countInStock,
         slug: product.slug.current,
-        price: product.price,
+        size: product.size = value,
+        price: value == '500g' ? product.price *2 : product.price,
         image: urlForThumbnail(product.image),
         quantity,
       },
@@ -131,7 +134,27 @@ export default function ProductScreen(props) {
                         <Typography>Price</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography>₹{product.price}</Typography>
+                        <Typography>
+                        ₹ {value == '500g' ? product.price *2 : product.price}
+                          </Typography>
+                      </Grid>
+                    </Grid>
+                  </ListItem>
+                  <ListItem>
+                    <Grid container>
+                      <Grid item xs={6}>
+                        <Typography>
+                          Size:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                      <select value={value} onChange={(e) => {
+                            setValue(e.target.value)
+                            product.size=value
+                          }}>
+                            <option value='250g'>250g</option>
+                            <option value='500g'>500g</option>
+                          </select>
                       </Grid>
                     </Grid>
                   </ListItem>
@@ -166,6 +189,15 @@ export default function ProductScreen(props) {
       )}
     </Layout>
   );
+}
+
+export function setPrice(value){
+  if(value == 'a'){
+    return product.price
+  }
+  else if(value =='b'){
+    return product.price * 2
+  }
 }
 
 export function getServerSideProps(context) {

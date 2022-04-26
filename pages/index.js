@@ -50,6 +50,7 @@ export default function Home() {
         name: product.name,
         countInStock: product.countInStock,
         slug: product.slug.current,
+        size: product.size = '250g',
         price: product.price,
         image: urlForThumbnail(product.image),
         quantity,

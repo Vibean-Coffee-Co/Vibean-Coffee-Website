@@ -50,6 +50,7 @@ function CartScreen() {
         name: item.name,
         countInStock: item.countInStock,
         slug: item.slug,
+        size: item.size,
         price: item.price,
         image: item.image,
         quantity,
@@ -85,7 +86,8 @@ function CartScreen() {
                   <TableRow>
                     <TableCell>Image</TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell align="right">Qauntity</TableCell>
+                    <TableCell align="right">Quantity</TableCell>
+                    <TableCell align="right">Size</TableCell>
                     <TableCell align="right">Price</TableCell>
                     <TableCell align="right">Action</TableCell>
                   </TableRow>
@@ -125,6 +127,9 @@ function CartScreen() {
                             </MenuItem>
                           ))}
                         </Select>
+                      </TableCell>
+                      <TableCell align="right">
+                        {item.size}
                       </TableCell>
                       <TableCell align="right">
                         <Typography>${item.price}</Typography>
