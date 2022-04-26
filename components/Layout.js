@@ -190,6 +190,19 @@ export default function Layout({ title, description, children }) {
                     </ListItem>
                   </NextLink>
                 ))}
+                <NextLink
+                    href={`/store`}
+                    passHref
+                >
+                  <ListItem
+                    button
+                    component="a"
+                    onClick={sidebarCloseHandler}
+                  >
+                    <ListItemText primary='Store'></ListItemText>
+
+                  </ListItem>
+                </NextLink>
               </List>
             </Drawer>
             <Box sx={isDesktop ? classes.visible : classes.hidden}>
@@ -217,6 +230,9 @@ export default function Layout({ title, description, children }) {
                 checked={darkMode}
                 onChange={darkModeChangeHandler}
               ></Switch>
+              <NextLink href="/store" passHref>
+                <Link>Store</Link>
+              </NextLink>
               <NextLink href="/cart" passHref>
                 <Link>
                   <Typography component="span">
