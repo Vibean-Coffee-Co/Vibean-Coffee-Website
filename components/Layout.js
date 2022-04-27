@@ -159,6 +159,24 @@ export default function Layout({ title, description, children }) {
               onClose={sidebarCloseHandler}
             >
               <List>
+              <NextLink
+                    href={`/store`}
+                    passHref
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between">
+                  <ListItem
+                    button
+                    component="a"
+                    onClick={sidebarCloseHandler}
+                  >
+                    <ListItemText primary='Store'></ListItemText>
+                  </ListItem>
+                  </Box>
+                </NextLink>
+                <Divider light />
                 <ListItem>
                   <Box
                     display="flex"
@@ -172,6 +190,7 @@ export default function Layout({ title, description, children }) {
                     >
                       <CancelIcon />
                     </IconButton>
+                   
                   </Box>
                 </ListItem>
                 <Divider light />
@@ -191,18 +210,16 @@ export default function Layout({ title, description, children }) {
                   </NextLink>
                 ))}
                 <NextLink
-                    href={`/store`}
-                    passHref
-                >
-                  <ListItem
-                    button
-                    component="a"
-                    onClick={sidebarCloseHandler}
-                  >
-                    <ListItemText primary='Store'></ListItemText>
-
-                  </ListItem>
-                </NextLink>
+                  href="/terms"
+                  passHref>
+                    <ListItem
+                      component="a"
+                      onClick={sidebarCloseHandler}
+                      >
+                        Terms and Conditions
+                      </ListItem>
+                  </NextLink>
+                
               </List>
             </Drawer>
             <Box sx={isDesktop ? classes.visible : classes.hidden}>
